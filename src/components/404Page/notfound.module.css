@@ -1,0 +1,24 @@
+.pageContainer{
+
+    outline-offset: -2px;
+    height: 100vh;
+    align-content: center;
+    text-align: center;
+}
+
+.title{
+    color: rgb(204, 203, 203);
+    font-size: 40px;
+    font-weight: 500;
+    padding: 20px;
+    
+}
+.linkTo{
+    color: blue;
+    padding:10px;
+    border-radius: 10px;
+    outline:2px solid rgba(247, 247, 247, 0.933);
+}
+.linkTo:hover{
+    color: #fff;
+}
