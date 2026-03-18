@@ -1,8 +1,8 @@
+import style from './nav.module.css'
 const Topnav =()=>{
     return(
-        <section>
-            <div>title</div>
-            <div>score board</div>
+        <section className={style.topNav}>
+            <div style={{justifySelf: 'center'}}>Where is waldo?</div>
         </section>
     )
 }

@@ -1,0 +1,6 @@
+.photoCanvas{
+    max-width: 100%;
+}
+.photoCanvas:hover{
+    cursor: crosshair;
+}
