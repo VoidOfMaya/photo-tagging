@@ -4,60 +4,97 @@ import style from './home.module.css'
 import { useEffect, useRef, useState } from 'react'
 const Home =()=>{
     const imgRef = useRef(null);
-    const [position, setPostion] = useState({x: null,y: null})
+   // const [position, setPostion] = useState({x: null,y: null})
     const [target, setTarget] = useState(false);
+    const [data, setData]= useState({
+        // outgoing to backend
+            currentTX: 0,
+            currentTY: 0,
+            currentSX: 0,
+            currentSY: 0,  
+            targetId: null,   
+        // rendering purposes
+            position: {X: null, Y: null}  
+    })
 
-    const updatePosition=(e)=>{
-        const react = e.target.getBoundingClientRect();
+    const targetHandler=(e)=>{
         const img = imgRef.current.getBoundingClientRect();
-        const x = e.clientX - react.left;
-        const y = e.clientY - react.top;
-        console.log(`current target: \nx:${x}, y:${y}`)
-        console.log(`canvase size: \nx:${img.width}, y:${img.height}`)
-        setPostion({x:x, y:y});
+
+        const x = e.clientX;
+        const y = e.clientY;
+        setData({   
+                currentTX: x - img.left,
+                currentTY: y - img.top,
+                currentSX: img.width,
+                currentSY: img.height, 
+                targetId: 1,
+                position: {X: x, Y:y}
+            })
+
         setTarget(true)
     }
-    const dropmenu = ()=>{
+    const dropmenu = (targets, fn)=>{
         if(!target) return;
         return(
-            <>
-                <Dropdown targets={['waldo', 'waldina']}
-                position={position}
+            <div style={{transform: 'translate(40px,40px)'}}>
+                <Dropdown targets={targets} selectTarget={fn}
+                position={data.position}
                 />
-            </>
+            </div>
         )
     }
 
     useEffect(()=>{
         const updateSize=()=>{
             if(!imgRef.current)return;
-            imgRef.current.getBoundingClientRect();
+
+            const img =imgRef.current.getBoundingClientRect();
+            setData(prev=>({
+                ...prev,
+                currentSX: img.width,
+                currentSY: img.height,
+                position:{ 
+                    X:  data.currentTX/data.currentSX * img.width , 
+                    Y:  data.currentTY/data.currentSY * img.height 
+                }
+            })) 
+        console.log(`old size and position: TX:${data.currentTX} TY:${data.currentTY} PX:${data.position.X} PY:${data.position.Y}`)
+        console.log(`new size and position: TX:${img.width} TY:${img.height} PX:${data.currentTX/data.currentSX * img.width} PY:${data.currentTY/data.currentSY * img.height }`)
+
+            if(data.position.X !== null) setTarget(true);
         };
+       
         updateSize()
         window.addEventListener('resize',updateSize);
         return ()=> window.removeEventListener('resize',updateSize);
     },[])
+    //console.log(data)
     return(
-        <div>
-            
+        <div className={style.waldoContainer}>     
             <img  
                 ref={imgRef}  
                 src={levelOne}
                 className={style.photoCanvas}    
-                onClick={e=>{updatePosition(e)}}
-                onChange={e=>{targetPostion(e)}}
+                onClick={e=>{targetHandler(e)}}
             ></img>
-            <div>x:{position.x}</div>
-            <div>Y:{position.y}</div>
-            <div style={{width: '50px',
-                         height: '50px',
-                         border: `2px solid red`,
-                         position: 'absolute',
-                         left: `${position.x- 53/2}px`,
-                         top: `${position.y+ 53/2}px`,
-                        }}>
-            </div>
-            {dropmenu()}
+            <div>x:{data.position.X}</div>
+            <div>Y:{data.position.Y}</div>
+            {target?(
+                
+                <div style={{width: '50px',
+                            height: '50px',
+                            border: `2px solid red`,
+                            borderRadius: '25px',
+                            position: 'absolute',
+                            left: `${data.position.X - 53/2}px`,
+                            top: `${data.position.Y - 53/2}px`,
+                            }}>{dropmenu(['waldo', 'waldina'])}
+                </div>                
+            ):(
+                <></>
+            )}
+
+            
         </div>
     )
 }
