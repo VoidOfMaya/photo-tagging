@@ -4,7 +4,7 @@ import style from './home.module.css'
 import { useEffect, useRef, useState } from 'react'
 const Home =()=>{
     const imgRef = useRef(null);
-   // const [position, setPostion] = useState({x: null,y: null})
+   const pRef = useRef({T:{X: null,Y:null},S:{W:null,H:null}})
     const [target, setTarget] = useState(false);
     const [data, setData]= useState({
         // outgoing to backend
@@ -16,19 +16,30 @@ const Home =()=>{
         // rendering purposes
             position: {X: null, Y: null}  
     })
-
     const targetHandler=(e)=>{
         const img = imgRef.current.getBoundingClientRect();
 
         const x = e.clientX;
         const y = e.clientY;
+        
+        pRef.current = {
+            T:{
+                X: x-img.left, 
+                Y: y-img.top
+            },
+            S:{
+                W:img.width,
+                H:img.height
+            }
+        }
+        
         setData({   
                 currentTX: x - img.left,
                 currentTY: y - img.top,
                 currentSX: img.width,
                 currentSY: img.height, 
                 targetId: 1,
-                position: {X: x, Y:y}
+                position: {X: pRef.current.T.X, Y:pRef.current.T.Y}
             })
 
         setTarget(true)
@@ -46,16 +57,27 @@ const Home =()=>{
 
     useEffect(()=>{
         const updateSize=()=>{
-            if(!imgRef.current)return;
 
+            if(!imgRef.current && !pRef.current.T.X)return;
             const img =imgRef.current.getBoundingClientRect();
+            pRef.current = {
+                T:{
+                    X:pRef.current.T.X/pRef.current.S.W * img.width ,
+                    Y:pRef.current.T.Y/pRef.current.S.H  * img.height 
+                },
+                S:{
+                    W:img.width,
+                    H:img.height
+                }
+            }
+
             setData(prev=>({
                 ...prev,
                 currentSX: img.width,
                 currentSY: img.height,
                 position:{ 
-                    X:  data.currentTX/data.currentSX * img.width , 
-                    Y:  data.currentTY/data.currentSY * img.height 
+                    X:  pRef.current.T.X , 
+                    Y:  pRef.current.T.Y 
                 }
             })) 
         console.log(`old size and position: TX:${data.currentTX} TY:${data.currentTY} PX:${data.position.X} PY:${data.position.Y}`)

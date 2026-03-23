@@ -3,10 +3,11 @@ body{
 }
 .waldoContainer{
     display: grid;
+    position: relative;
 }
 
 .photoCanvas{
-    width: 800px;
+    width: 100%;
     justify-self: center;
     position: relative;
 
