@@ -2,9 +2,13 @@ import { Dropdown } from '../dropdown/dropdown.jsx'
 import levelOne from '../../assets/photos/Waldo-Underground.jpg'
 import style from './home.module.css'
 import { useEffect, useRef, useState } from 'react'
+import { GameStart } from '../startDialog/dialog.jsx'
+import { TargetCard } from '../targetList/targets.jsx'
 const Home =()=>{
+    //refs
     const imgRef = useRef(null);
-   const pRef = useRef({T:{X: null,Y:null},S:{W:null,H:null}})
+    const pRef = useRef({T:{X: null,Y:null},S:{W:null,H:null}})
+    //states
     const [target, setTarget] = useState(false);
     const [data, setData]= useState({
         // outgoing to backend
@@ -12,11 +16,12 @@ const Home =()=>{
             currentTY: 0,
             currentSX: 0,
             currentSY: 0,  
-            targetId: null,   
+            targetName: null,   
+            playerName: null,
         // rendering purposes
             position: {X: null, Y: null}  
     })
-    const targetHandler=(e)=>{
+    const selectHandler=(e)=>{
         const img = imgRef.current.getBoundingClientRect();
 
         const x = e.clientX;
@@ -32,29 +37,32 @@ const Home =()=>{
                 H:img.height
             }
         }
-        
-        setData({   
+        setData(prev =>({ 
+                ...prev,  
                 currentTX: x - img.left,
                 currentTY: y - img.top,
                 currentSX: img.width,
                 currentSY: img.height, 
-                targetId: 1,
                 position: {X: pRef.current.T.X, Y:pRef.current.T.Y}
             })
+        )
 
         setTarget(true)
     }
-    const dropmenu = (targets, fn)=>{
-        if(!target) return;
-        return(
-            <div style={{transform: 'translate(40px,40px)'}}>
-                <Dropdown targets={targets} selectTarget={fn}
-                position={data.position}
-                />
-            </div>
-        )
+    const targetHandler = (target)=>{
+        console.log(target)
+        setData(prev =>({
+            ...prev,
+            targetName:target
+        }))
     }
-
+    const populateTargets = (targets)=>{
+        return targets.map (t =>{
+            return(
+                <TargetCard name={t.name} select={targetHandler}/>
+            )
+        })
+    }
     useEffect(()=>{
         const updateSize=()=>{
 
@@ -70,7 +78,6 @@ const Home =()=>{
                     H:img.height
                 }
             }
-
             setData(prev=>({
                 ...prev,
                 currentSX: img.width,
@@ -80,27 +87,32 @@ const Home =()=>{
                     Y:  pRef.current.T.Y 
                 }
             })) 
-        console.log(`old size and position: TX:${data.currentTX} TY:${data.currentTY} PX:${data.position.X} PY:${data.position.Y}`)
-        console.log(`new size and position: TX:${img.width} TY:${img.height} PX:${data.currentTX/data.currentSX * img.width} PY:${data.currentTY/data.currentSY * img.height }`)
-
             if(data.position.X !== null) setTarget(true);
         };
-       
         updateSize()
         window.addEventListener('resize',updateSize);
         return ()=> window.removeEventListener('resize',updateSize);
     },[])
-    //console.log(data)
+    //<GameStart ref={dlgRef} start={handleStart}/>
     return(
         <div className={style.waldoContainer}>     
+            
+            <section style={{height: '50px'}}>target section
+                <div className={style.targetContainer}>
+                    {populateTargets([{name: 'waldo'}, {name: 'wanda'}, {name: 'odlaw'}])}
+                </div>
+            </section>
             <img  
                 ref={imgRef}  
                 src={levelOne}
                 className={style.photoCanvas}    
-                onClick={e=>{targetHandler(e)}}
+                onClick={e=>{selectHandler(e)}}
             ></img>
-            <div>x:{data.position.X}</div>
-            <div>Y:{data.position.Y}</div>
+            <div>target: {data.targetName}</div>
+            <div>SW:{data.currentSX}</div>
+            <div>SH:{data.currentSY}</div>
+            <div>TX:{data.position.X}</div>
+            <div>TY:{data.position.Y}</div>
             {target?(
                 
                 <div style={{width: '50px',
@@ -110,7 +122,7 @@ const Home =()=>{
                             position: 'absolute',
                             left: `${data.position.X - 53/2}px`,
                             top: `${data.position.Y - 53/2}px`,
-                            }}>{dropmenu(['waldo', 'waldina'])}
+                            }}>
                 </div>                
             ):(
                 <></>

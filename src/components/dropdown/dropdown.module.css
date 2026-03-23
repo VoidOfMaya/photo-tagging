@@ -1,6 +1,14 @@
 .drop{
     background-color: rgb(72, 72, 72);
     color: white;
-    padding: 10px;
     border-radius: 5px;
+}
+.opts{
+    padding: 5px 10px;
+    transform: scale(1);
+    transition: transform .3s ease-out;
+}
+.opts:hover{
+    background-color: rgb(98, 98, 98);
+    transform: scale(1.1);
 }
