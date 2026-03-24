@@ -9,6 +9,11 @@ const Home =()=>{
     const imgRef = useRef(null);
     const pRef = useRef({T:{X: null,Y:null},S:{W:null,H:null}})
     //states
+    const [targets, setTargets] = useState([
+        {name: 'waldo', photo: '', isSelected: false}, 
+        {name: 'wanda', photo: '', isSelected: false}, 
+        {name: 'odlaw', photo: '', isSelected: false}
+    ])
     const [target, setTarget] = useState(false);
     const [data, setData]= useState({
         // outgoing to backend
@@ -46,7 +51,6 @@ const Home =()=>{
                 position: {X: pRef.current.T.X, Y:pRef.current.T.Y}
             })
         )
-
         setTarget(true)
     }
     const targetHandler = (target)=>{
@@ -57,9 +61,10 @@ const Home =()=>{
         }))
     }
     const populateTargets = (targets)=>{
-        return targets.map (t =>{
+        return targets.map ((t, i) =>{
+            console.log(t)
             return(
-                <TargetCard name={t.name} select={targetHandler}/>
+                <TargetCard target={t} key={i}/>
             )
         })
     }
@@ -70,6 +75,8 @@ const Home =()=>{
             const img =imgRef.current.getBoundingClientRect();
             pRef.current = {
                 T:{
+                    // X:pRef.current.T.X/pRef.current.S.W * img.width
+                    // Y:pRef.current.T.Y/pRef.current.S.H  * img.height 
                     X:pRef.current.T.X/pRef.current.S.W * img.width ,
                     Y:pRef.current.T.Y/pRef.current.S.H  * img.height 
                 },
@@ -96,25 +103,17 @@ const Home =()=>{
     //<GameStart ref={dlgRef} start={handleStart}/>
     return(
         <div className={style.waldoContainer}>     
-            
-            <section style={{height: '50px'}}>target section
-                <div className={style.targetContainer}>
-                    {populateTargets([{name: 'waldo'}, {name: 'wanda'}, {name: 'odlaw'}])}
-                </div>
-            </section>
             <img  
                 ref={imgRef}  
                 src={levelOne}
                 className={style.photoCanvas}    
                 onClick={e=>{selectHandler(e)}}
             ></img>
-            <div>target: {data.targetName}</div>
-            <div>SW:{data.currentSX}</div>
-            <div>SH:{data.currentSY}</div>
-            <div>TX:{data.position.X}</div>
-            <div>TY:{data.position.Y}</div>
-            {target?(
-                
+            <p style={{fontSize: '12px', color: 'gray', margin: 0}}>
+                Target:[N: {data.targetName} || X:{data.position.X} || Y:{data.position.Y}] 
+                Screen:[W:{data.currentSX} || H:{data.currentSY}]  
+            </p>
+            {target?(            
                 <div style={{width: '50px',
                             height: '50px',
                             border: `2px solid red`,
@@ -127,6 +126,11 @@ const Home =()=>{
             ):(
                 <></>
             )}
+            <section >
+                <div className={style.targetContainer}>
+                    {populateTargets(targets)}
+                </div>
+            </section>
 
             
         </div>

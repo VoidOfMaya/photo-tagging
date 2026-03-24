@@ -1,9 +1,12 @@
 import style from './target.module.css'
-const TargetCard = ({name, photo, select})=>{
+const TargetCard = ({target})=>{
     return(
-        <div className={style.card}
-        onClick={()=>{select(name)}}>
-            {name}
+        <div style={{padding: '10px'}}
+        className={
+            target.isSelected?(style.found):(style.notFound)
+        }
+        onClick={()=>{select(target.name)}}>
+            {target.name}
         </div>
     )
 }
