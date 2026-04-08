@@ -12,12 +12,12 @@ const formatTime = (ms)=>{
 }
 const populateScore = (data)=>{
     console.log(data)
+    if(!data) return
     return data.map(session =>{
         return<tr><td>{session.name}</td><td>{formatTime(session.time)}</td></tr>
     })
-    //return(
-    //    <tr><td></td><td>00:13</td></tr>
-    //)
+  
+
 }
 const ScoreBoard =({scorsArray})=>{
     return(

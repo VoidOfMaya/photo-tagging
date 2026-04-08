@@ -7,9 +7,9 @@ const GameStart =({ref,score, start})=>{
         <dialog ref={ref} className={style.dlg}>
 
             <h2 style={{gridArea: 'title', justifySelf: 'center'}}>wheres waldo? </h2>
-            <div style={{gridArea: 'score', overflowY: 'auto'}}>
+            <div style={{gridArea: 'score', overflowY: 'auto',padding: '10px'}}>
                 <table style={{position: 'sticky',top: 0}}>
-                    <thead style={{height: '10%'}}>
+                    <thead style={{height: '10%', textAlign: 'left'}}>
                         <tr>
                             <th>Player</th>
                             <th>Time</th>
