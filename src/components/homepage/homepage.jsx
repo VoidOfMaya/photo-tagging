@@ -73,6 +73,19 @@ const Home =()=>{
             )
         })
     }
+    const startSession = async(data)=>{
+
+        const res = await fetch(`${import.meta.env.VITE_API_URL}`,{
+            method: 'POST',
+            headers:{ 'Content-Type': 'application/json' },
+            body:JSON.stringify(data),
+        });
+        const result = await res.json();
+        if(!result) return;
+        setSession(result);
+        console.log(session);
+
+    }
     //manages screen sizing
     useEffect(()=>{
         const updateSize=()=>{
@@ -134,10 +147,12 @@ const Home =()=>{
     return(
         <>
             <div className={style.waldoContainer}> 
-                <GameStart 
+                <GameStart
+                    start={startSession} 
                     score={score} 
                     ref={modalRef} 
                     style={{position: 'absolute'}}/>
+                    
                 <img  
                     ref={imgRef}  
                     src={levelOne}

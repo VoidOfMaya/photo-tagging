@@ -3,6 +3,13 @@ import style from './dlg.module.css'
 import { ScoreBoard } from "../score/score"
 
 const GameStart =({ref,score, start})=>{
+
+    const formData = (e)=>{
+        e.preventDefault();
+        const playerName = new FormData(e.target);
+        const data = {playername: playerName.get("playername"), mapId: 1}
+        start(data);
+    }
     return(
         <dialog ref={ref} className={style.dlg}>
 
@@ -25,11 +32,10 @@ const GameStart =({ref,score, start})=>{
                 <p>- if all targets are found you will be returned to this window to view the score board</p>
             </div>
             <div style={{gridArea: 'start',justifySelf: 'center'}}>
-                <form>
-                    <label for="playername">player name:</label>
+                <form onSubmit={formData}>
+                    <label htmlFor="playername">player name:</label>
                     <input name="playername" id="playername" placeholder="name goes here!"></input>
-                    <button type="button"
-                    onClick={()=>start()}>start Game!</button>                
+                    <button type="submit">start Game!</button>                
                 </form>
                 <h6 style={{textAlign: 'center'}}>field is not required. no name = player is annonymous</h6>                
             </div>

@@ -11,7 +11,6 @@ const formatTime = (ms)=>{
     return `${paddedMinutes}:${paddedSeconds}`
 }
 const populateScore = (data)=>{
-    console.log(data)
     if(!data) return
     return data.map(session =>{
         return<tr><td>{session.name}</td><td>{formatTime(session.time)}</td></tr>
