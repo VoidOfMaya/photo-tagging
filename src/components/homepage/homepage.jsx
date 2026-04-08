@@ -29,6 +29,7 @@ const Home =()=>{
             position: {X: null, Y: null}  
     })
     const [session, setSession]= useState(null);
+    const[score, setScore]= useState(null)
 
     //functions
     const selectHandler=(e)=>{
@@ -72,6 +73,7 @@ const Home =()=>{
             )
         })
     }
+    //manages screen sizing
     useEffect(()=>{
         const updateSize=()=>{
 
@@ -104,17 +106,38 @@ const Home =()=>{
         window.addEventListener('resize',updateSize);
         return ()=> window.removeEventListener('resize',updateSize);
     },[])
+    //manages dialog display
     useEffect(()=>{
         const dialog = modalRef.current;
         if (!dialog) return;
 
         !session? dialog.showModal(): dialog.close();
     },[session])
+    //manages data fetching
+    useEffect(()=>{
+        try{
+            fetch(`${import.meta.env.VITE_API_URL}`)
+            .then(response=>{
+                if(response.status >=400) throw new Error('Something whent wrong: ' + response)
+                return response.json();    
+            })
+            .then(data=>{
+                setScore(data)
+            })
+            .catch(error => {throw new Error(error)})
+            //implement loader visualizer
+        }catch(err){
+            console.log(err.message)
+        }
+    },[])
     //<GameStart ref={dlgRef} start={handleStart}/>
     return(
         <>
             <div className={style.waldoContainer}> 
-                <GameStart ref={modalRef} style={{position: 'absolute'}}/>
+                <GameStart 
+                    score={score} 
+                    ref={modalRef} 
+                    style={{position: 'absolute'}}/>
                 <img  
                     ref={imgRef}  
                     src={levelOne}

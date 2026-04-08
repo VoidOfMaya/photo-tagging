@@ -1,34 +1,31 @@
 import style from './score.module.css'
-const ScoreBoard =()=>{
+
+const formatTime = (ms)=>{
+    const rawSeconds = Math.floor(ms / 1000);
+
+    const minutes = Math.floor(rawSeconds /60);
+    const seconds = rawSeconds % 60; 
+    const paddedMinutes = String(minutes).padStart(2, '0');
+    const paddedSeconds = String(seconds).padStart(2, '0');
+
+    return `${paddedMinutes}:${paddedSeconds}`
+}
+const populateScore = (data)=>{
+    console.log(data)
+    return data.map(session =>{
+        return<tr><td>{session.name}</td><td>{formatTime(session.time)}</td></tr>
+    })
+    //return(
+    //    <tr><td></td><td>00:13</td></tr>
+    //)
+}
+const ScoreBoard =({scorsArray})=>{
     return(
         <div className={style.score}>
             <table>
   
                 <tbody >
-                    <tr><td>abdullah</td><td>00:13</td></tr>
-                    <tr><td>abdullah</td><td>00:13</td></tr>
-                    <tr><td>abdullah</td><td>00:13</td></tr>
-                    <tr><td>abdullah</td><td>00:13</td></tr>
-                    <tr><td>abdullah</td><td>00:13</td></tr>
-                    <tr><td>abdullah</td><td>00:13</td></tr>
-                    <tr><td>abdullah</td><td>00:13</td></tr>
-                    <tr><td>abdullah</td><td>00:13</td></tr>
-                    <tr><td>abdullah</td><td>00:13</td></tr>
-                    <tr><td>abdullah</td><td>00:13</td></tr>
-                    <tr><td>abdullah</td><td>00:13</td></tr>
-                    <tr><td>abdullah</td><td>00:13</td></tr>
-                    <tr><td>abdullah</td><td>00:13</td></tr>
-                    <tr><td>abdullah</td><td>00:13</td></tr>
-                    <tr><td>abdullah</td><td>00:13</td></tr>
-                    <tr><td>abdullah</td><td>00:13</td></tr>
-                    <tr><td>abdullah</td><td>00:13</td></tr>
-                    <tr><td>abdullah</td><td>00:13</td></tr>
-                    <tr><td>abdullah</td><td>00:13</td></tr>
-                    <tr><td>abdullah</td><td>00:13</td></tr>
-                    <tr><td>abdullah</td><td>00:13</td></tr>
-                    <tr><td>abdullah</td><td>00:13</td></tr>
-                    <tr><td>abdullah</td><td>00:13</td></tr>
-                    <tr><td>abdullah</td><td>00:13</td></tr>
+                    {populateScore(scorsArray)}
                 </tbody>
             </table>
         </div>

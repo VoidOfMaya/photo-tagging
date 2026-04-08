@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react"
 import style from './dlg.module.css'
 import { ScoreBoard } from "../score/score"
 
-const GameStart =({ref, start})=>{
+const GameStart =({ref,score, start})=>{
     return(
         <dialog ref={ref} className={style.dlg}>
 
@@ -16,7 +16,7 @@ const GameStart =({ref, start})=>{
                         </tr>
                     </thead>
                 </table>
-                <ScoreBoard />                
+                <ScoreBoard scorsArray={score}/>                
             </div>
 
             <div style={{gridArea: 'rules', fontSize: '12px'}}>
