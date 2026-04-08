@@ -1,11 +1,39 @@
-const scoreBoard =()=>{
+import style from './score.module.css'
+const ScoreBoard =()=>{
     return(
-        <>
-            <h1>scoreboard here!</h1>
-            
-        </>
+        <div className={style.score}>
+            <table>
+  
+                <tbody >
+                    <tr><td>abdullah</td><td>00:13</td></tr>
+                    <tr><td>abdullah</td><td>00:13</td></tr>
+                    <tr><td>abdullah</td><td>00:13</td></tr>
+                    <tr><td>abdullah</td><td>00:13</td></tr>
+                    <tr><td>abdullah</td><td>00:13</td></tr>
+                    <tr><td>abdullah</td><td>00:13</td></tr>
+                    <tr><td>abdullah</td><td>00:13</td></tr>
+                    <tr><td>abdullah</td><td>00:13</td></tr>
+                    <tr><td>abdullah</td><td>00:13</td></tr>
+                    <tr><td>abdullah</td><td>00:13</td></tr>
+                    <tr><td>abdullah</td><td>00:13</td></tr>
+                    <tr><td>abdullah</td><td>00:13</td></tr>
+                    <tr><td>abdullah</td><td>00:13</td></tr>
+                    <tr><td>abdullah</td><td>00:13</td></tr>
+                    <tr><td>abdullah</td><td>00:13</td></tr>
+                    <tr><td>abdullah</td><td>00:13</td></tr>
+                    <tr><td>abdullah</td><td>00:13</td></tr>
+                    <tr><td>abdullah</td><td>00:13</td></tr>
+                    <tr><td>abdullah</td><td>00:13</td></tr>
+                    <tr><td>abdullah</td><td>00:13</td></tr>
+                    <tr><td>abdullah</td><td>00:13</td></tr>
+                    <tr><td>abdullah</td><td>00:13</td></tr>
+                    <tr><td>abdullah</td><td>00:13</td></tr>
+                    <tr><td>abdullah</td><td>00:13</td></tr>
+                </tbody>
+            </table>
+        </div>
     )
 }
 export{
-    scoreBoard,
+    ScoreBoard,
 }
