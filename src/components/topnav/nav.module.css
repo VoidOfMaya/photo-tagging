@@ -2,4 +2,5 @@
     display: grid;
     padding: 10px;
     font-size: 24px;
+    z-index: 2;
 }

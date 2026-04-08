@@ -8,6 +8,8 @@ const Home =()=>{
     //refs
     const imgRef = useRef(null);
     const pRef = useRef({T:{X: null,Y:null},S:{W:null,H:null}})
+    const modalRef = useRef(null);
+
     //states
     const [targets, setTargets] = useState([
         {name: 'waldo', photo: '', isSelected: false}, 
@@ -26,6 +28,9 @@ const Home =()=>{
         // rendering purposes
             position: {X: null, Y: null}  
     })
+    const [session, setSession]= useState(null);
+
+    //functions
     const selectHandler=(e)=>{
         const img = imgRef.current.getBoundingClientRect();
 
@@ -62,7 +67,6 @@ const Home =()=>{
     }
     const populateTargets = (targets)=>{
         return targets.map ((t, i) =>{
-            console.log(t)
             return(
                 <TargetCard target={t} key={i}/>
             )
@@ -100,40 +104,47 @@ const Home =()=>{
         window.addEventListener('resize',updateSize);
         return ()=> window.removeEventListener('resize',updateSize);
     },[])
+    useEffect(()=>{
+        const dialog = modalRef.current;
+        if (!dialog) return;
+
+        !session? dialog.showModal(): dialog.close();
+    },[session])
     //<GameStart ref={dlgRef} start={handleStart}/>
     return(
-        <div className={style.waldoContainer}>     
-            <img  
-                ref={imgRef}  
-                src={levelOne}
-                className={style.photoCanvas}    
-                onClick={e=>{selectHandler(e)}}
-            ></img>
-            <p style={{fontSize: '12px', color: 'gray', margin: 0}}>
-                Target:[N: {data.targetName} || X:{data.position.X} || Y:{data.position.Y}] 
-                Screen:[W:{data.currentSX} || H:{data.currentSY}]  
-            </p>
-            {target?(            
-                <div style={{width: '50px',
-                            height: '50px',
-                            border: `2px solid red`,
-                            borderRadius: '25px',
-                            position: 'absolute',
-                            left: `${data.position.X - 53/2}px`,
-                            top: `${data.position.Y - 53/2}px`,
-                            }}>
-                </div>                
-            ):(
-                <></>
-            )}
-            <section >
-                <div className={style.targetContainer}>
-                    {populateTargets(targets)}
-                </div>
-            </section>
-
-            
-        </div>
+        <>
+            <div className={style.waldoContainer}> 
+                <GameStart ref={modalRef} style={{position: 'absolute'}}/>
+                <img  
+                    ref={imgRef}  
+                    src={levelOne}
+                    className={style.photoCanvas}    
+                    onClick={e=>{selectHandler(e)}}
+                ></img>
+                <p style={{fontSize: '12px', color: 'gray', margin: 0}}>
+                    Target:[N: {data.targetName} || X:{data.position.X} || Y:{data.position.Y}] 
+                    Screen:[W:{data.currentSX} || H:{data.currentSY}]  
+                </p>
+                {target?(            
+                    <div style={{width: '50px',
+                                height: '50px',
+                                border: `2px solid red`,
+                                borderRadius: '25px',
+                                position: 'absolute',
+                                left: `${data.position.X - 53/2}px`,
+                                top: `${data.position.Y - 53/2}px`,
+                                }}>
+                    </div>                
+                ):(
+                    <></>
+                )}
+                <section >
+                    <div className={style.targetContainer}>
+                        {populateTargets(targets)}
+                    </div>
+                </section>
+            </div>
+        </>
     )
 }
 export{
