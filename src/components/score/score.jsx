@@ -1,4 +1,6 @@
+
 import style from './score.module.css'
+import { ButtonLoading, Loading } from '../loading/load';
 
 const formatTime = (ms)=>{
     const rawSeconds = Math.floor(ms / 1000);
@@ -11,7 +13,7 @@ const formatTime = (ms)=>{
     return `${paddedMinutes}:${paddedSeconds}`
 }
 const populateScore = (data)=>{
-    if(!data) return
+    if(!data) return 
     return data.map(session =>{
         return<tr><td>{session.name}</td><td>{formatTime(session.time)}</td></tr>
     })
@@ -19,6 +21,15 @@ const populateScore = (data)=>{
 
 }
 const ScoreBoard =({scorsArray})=>{
+    
+
+    if(!scorsArray){
+        return(
+            <div style={{display: 'flex',justifyContent: 'center', marginTop: '5em'}}>
+                <ButtonLoading />            
+            </div>
+        )
+    }
     return(
         <div className={style.score}>
             <table>
@@ -27,8 +38,10 @@ const ScoreBoard =({scorsArray})=>{
                     {populateScore(scorsArray)}
                 </tbody>
             </table>
+
         </div>
     )
+
 }
 export{
     ScoreBoard,

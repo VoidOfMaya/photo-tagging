@@ -59,13 +59,6 @@ const Home =()=>{
         )
         setTarget(true)
     }
-    const targetHandler = (target)=>{
-        console.log(target)
-        setData(prev =>({
-            ...prev,
-            targetName:target
-        }))
-    }
     const populateTargets = (targets)=>{
         return targets.map ((t, i) =>{
             return(

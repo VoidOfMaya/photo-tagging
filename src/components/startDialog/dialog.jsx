@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import style from './dlg.module.css'
 import { ScoreBoard } from "../score/score"
 
