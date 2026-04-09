@@ -222,7 +222,8 @@ const Home =()=>{
                                 }}>
                     <Dropdown position={data.position}
                               targets={targets}
-                              selectTarget={selectTarget} />
+                              selectTarget={selectTarget}
+                     />
                     </div>              
                 ):(
                     <></>
