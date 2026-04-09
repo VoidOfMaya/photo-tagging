@@ -1,9 +1,14 @@
-import { Dropdown } from '../dropdown/dropdown.jsx'
+
 import levelOne from '../../assets/photos/Waldo-Underground.jpg'
 import style from './home.module.css'
 import { useEffect, useRef, useState } from 'react'
 import { GameStart } from '../startDialog/dialog.jsx'
 import { TargetCard } from '../targetList/targets.jsx'
+//import photo
+import waldo from '../../assets/photos/waldo.jpg'
+import wenda from '../../assets/photos/wenda.jpg'
+import odlaw from '../../assets/photos/odlaw.jpg'
+import { Dropdown } from '../dropdown/dropdown.jsx'
 const Home =()=>{
     //refs
     const imgRef = useRef(null);
@@ -12,9 +17,10 @@ const Home =()=>{
 
     //states
     const [targets, setTargets] = useState([
-        {name: 'waldo', photo: '', isSelected: false}, 
-        {name: 'wanda', photo: '', isSelected: false}, 
-        {name: 'odlaw', photo: '', isSelected: false}
+        {name: 'waldo', photo: waldo,isSelected: false, coords:{x:null,y:null}}, 
+        {name: 'wanda', photo: wenda,isSelected: false, coords: {x:null,y:null}}, 
+        {name: 'odlaw', photo: odlaw,isSelected: false, coords: {x:null,y:null}},
+        {name: 'mermaid', photo: '',isSelected: false, coords: {x:null,y:null}}
     ])
     const [target, setTarget] = useState(false);
     const [data, setData]= useState({
@@ -32,6 +38,34 @@ const Home =()=>{
     const[score, setScore]= useState(null)
 
     //functions
+    const setTargetName = (name)=>{
+        setData(prev =>({ 
+                ...prev,  
+                targetName: name,
+            })
+        )      
+    }
+    const selectTarget =(name, position)=>{
+        //select target name
+        if (!target) return
+        setTargets(prev =>
+            prev.map(t =>{
+                if(t.name === name){
+                    return{
+                        ...t,
+                        isSelected: true,
+                        coords: {
+                            x: data.position.X,
+                            y: data.position.Y
+                        }
+                    }
+                }
+                return t;
+            })
+        )
+        //input target coords based on that name
+        //
+    }
     const selectHandler=(e)=>{
         const img = imgRef.current.getBoundingClientRect();
 
@@ -48,6 +82,7 @@ const Home =()=>{
                 H:img.height
             }
         }
+
         setData(prev =>({ 
                 ...prev,  
                 currentTX: x - img.left,
@@ -62,7 +97,7 @@ const Home =()=>{
     const populateTargets = (targets)=>{
         return targets.map ((t, i) =>{
             return(
-                <TargetCard target={t} key={i}/>
+                <TargetCard target={t} setData={setTargetName} key={i}/>
             )
         })
     }
@@ -78,6 +113,26 @@ const Home =()=>{
         setSession(result);
         console.log(session);
 
+    }
+    const outboundData = ()=>{
+        //data format: 
+        const formattedTargs = targets.map(t =>({
+            targetId: t.name,
+            x: t.coords.x,
+            y: t.coords.y
+        }))
+
+        const outbound ={
+            playerId: session,
+            mapId: 1,
+            screensize: {W: data.currentSX,H:data.currentSY},
+            //{"targetId": "waldo", "x": 2214,"y": 649}, 
+            targets: formattedTargs
+               
+            
+        }
+        console.log(outbound)
+        return
     }
     //manages screen sizing
     useEffect(()=>{
@@ -136,16 +191,16 @@ const Home =()=>{
             console.log(err.message)
         }
     },[])
-    //<GameStart ref={dlgRef} start={handleStart}/>
     return(
         <>
             <div className={style.waldoContainer}> 
+                {/*
                 <GameStart
                     start={startSession} 
                     score={score} 
                     ref={modalRef} 
                     style={{position: 'absolute'}}/>
-                    
+                */}   
                 <img  
                     ref={imgRef}  
                     src={levelOne}
@@ -165,19 +220,26 @@ const Home =()=>{
                                 left: `${data.position.X - 53/2}px`,
                                 top: `${data.position.Y - 53/2}px`,
                                 }}>
-                    </div>                
+                    <Dropdown position={data.position}
+                              targets={targets}
+                              selectTarget={selectTarget} />
+                    </div>              
                 ):(
                     <></>
                 )}
-                <section >
+                <section style={{display: 'flex', flexDirection: "column"}}>
+                    <p style={{alignSelf: 'center'}}>taargets to find: </p>
                     <div className={style.targetContainer}>
+                        
                         {populateTargets(targets)}
                     </div>
+                    <button type='button' style={{padding: '10px'}}
+                            onClick={()=>outboundData()}>end round!</button>
                 </section>
             </div>
         </>
     )
 }
 export{
-    Home
+   Home
 }

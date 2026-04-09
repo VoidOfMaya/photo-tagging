@@ -2,11 +2,15 @@ import style from './dropdown.module.css'
 const Dropdown=({targets, position, selectTarget})=>{
     const dropSelect =(arr)=>{
         return arr.map((target, i) => {
-            const name = target
+            const name = target.name
             return(
                 <div key={i} 
                 className={style.opts}
-                onClick={()=>selectTarget(name)}>{name}</div>
+                onClick={()=>{
+                    selectTarget(name)
+
+                }
+                }>{name}</div>
             )
         });
     }

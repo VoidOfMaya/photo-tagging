@@ -1,14 +1,18 @@
 import { useEffect, useRef, useState } from "react"
 import style from './dlg.module.css'
 import { ScoreBoard } from "../score/score"
+import { ButtonLoading } from "../loading/load"
 
 const GameStart =({ref,score, start})=>{
-
+    const [button, setButton] = useState('start Game');
     const formData = (e)=>{
         e.preventDefault();
         const playerName = new FormData(e.target);
         const data = {playername: playerName.get("playername"), mapId: 1}
         start(data);
+    }
+    const loader = ()=>{
+        setButton(<ButtonLoading />);
     }
     return(
         <dialog ref={ref} className={style.dlg}>
@@ -35,7 +39,7 @@ const GameStart =({ref,score, start})=>{
                 <form onSubmit={formData}>
                     <label htmlFor="playername">player name:</label>
                     <input name="playername" id="playername" placeholder="name goes here!"></input>
-                    <button type="submit">start Game!</button>                
+                    <button type="submit" >{button}</button>                
                 </form>
                 <h6 style={{textAlign: 'center'}}>field is not required. no name = player is annonymous</h6>                
             </div>
