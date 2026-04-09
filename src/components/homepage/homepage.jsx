@@ -9,33 +9,36 @@ import waldo from '../../assets/photos/waldo.jpg'
 import wenda from '../../assets/photos/wenda.jpg'
 import odlaw from '../../assets/photos/odlaw.jpg'
 import { Dropdown } from '../dropdown/dropdown.jsx'
+
+const initialTargets = [
+    { name: 'waldo', photo: waldo, isSelected: false, coords: { x: null, y: null } },
+    { name: 'wanda', photo: wenda, isSelected: false, coords: { x: null, y: null } },
+    { name: 'odlaw', photo: odlaw, isSelected: false, coords: { x: null, y: null } },
+    { name: 'mermaid', photo: null, isSelected: false, coords: { x: null, y: null } }
+];
+
+const initialData = {
+    currentTX: 0,
+    currentTY: 0,
+    currentSX: 0,
+    currentSY: 0,
+    targetName: null,
+    playerName: null,
+    position: { x: null, y: null }
+};
+
 const Home =()=>{
     //refs
     const imgRef = useRef(null);
     const pRef = useRef({T:{X: null,Y:null},S:{W:null,H:null}})
     const modalRef = useRef(null);
-
     //states
-    const [targets, setTargets] = useState([
-        {name: 'waldo', photo: waldo,isSelected: false, coords:{x:null,y:null}}, 
-        {name: 'wanda', photo: wenda,isSelected: false, coords: {x:null,y:null}}, 
-        {name: 'odlaw', photo: odlaw,isSelected: false, coords: {x:null,y:null}},
-        {name: 'mermaid', photo: '',isSelected: false, coords: {x:null,y:null}}
-    ])
+    const [targets, setTargets] = useState(initialTargets)
     const [target, setTarget] = useState(false);
-    const [data, setData]= useState({
-        // outgoing to backend
-            currentTX: 0,
-            currentTY: 0,
-            currentSX: 0,
-            currentSY: 0,  
-            targetName: null,   
-            playerName: null,
-        // rendering purposes
-            position: {X: null, Y: null}  
-    })
+    const [data, setData]= useState(initialData)
     const [session, setSession]= useState(null);
-    const[score, setScore]= useState(null)
+    const[score, setScore]= useState(null);
+    const[isEnd, setIsEnd] = useState(false);
 
     //functions
     const setTargetName = (name)=>{
@@ -114,26 +117,48 @@ const Home =()=>{
         console.log(session);
 
     }
-    const outboundData = ()=>{
-        //data format: 
+    const outboundData = async()=>{
+        if(!session) return
+        //target format: example=>{"targetId": "waldo", "x": 2214,"y": 649}
         const formattedTargs = targets.map(t =>({
             targetId: t.name,
             x: t.coords.x,
             y: t.coords.y
         }))
-
         const outbound ={
-            playerId: session,
-            mapId: 1,
+            playerId: session.id,
+            mapId: session.mapId,
             screensize: {W: data.currentSX,H:data.currentSY},
-            //{"targetId": "waldo", "x": 2214,"y": 649}, 
             targets: formattedTargs
-               
-            
         }
-        console.log(outbound)
-        return
+        endGame(outbound);
+        resetGame();
     }
+    const endGame = (payload) =>{
+        try{
+            fetch(`${import.meta.env.VITE_API_URL}`,{
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(payload)
+            })
+            .then(response=>{
+                if(response.status >=400) throw new Error('Something whent wrong: ' + response)
+                return response.json();    
+            })
+            .catch(error => {throw new Error(error)})
+        }catch(err){
+            console.log(err.message)
+        }
+    }
+    const resetGame =()=>{
+        setTargets(initialTargets);
+        setData(initialData);
+        setTarget(false);
+        setSession(null);
+        setScore(null);
+        pRef.current = { T: { X: null, Y: null }, S: { W: null, H: null } };
+    }
+    const isGameFinished = targets.every(t=> t.isSelected);
     //manages screen sizing
     useEffect(()=>{
         const updateSize=()=>{
@@ -229,13 +254,15 @@ const Home =()=>{
                     <></>
                 )}
                 <section style={{display: 'flex', flexDirection: "column"}}>
-                    <p style={{alignSelf: 'center'}}>taargets to find: </p>
+                    <p style={{alignSelf: 'center'}}>targets to find: blue means target is set </p>
                     <div className={style.targetContainer}>
                         
                         {populateTargets(targets)}
                     </div>
                     <button type='button' style={{padding: '10px'}}
-                            onClick={()=>outboundData()}>end round!</button>
+                            disabled={!isGameFinished}
+                            onClick={()=>outboundData()}
+                    >{!isGameFinished? ('round in session!'):('end game!')}</button>
                 </section>
             </div>
         </>
