@@ -2,5 +2,11 @@
     background-color: green;
 }
 .notFound{
-    background-color: red;
+    background-color: rgb(227, 226, 226);
+}
+.base{
+    border-radius: 15px;
+}
+.photo{
+    border-radius: 15px;
 }
