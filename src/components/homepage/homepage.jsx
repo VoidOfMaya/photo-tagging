@@ -8,6 +8,7 @@ import { TargetCard } from '../targetList/targets.jsx'
 import waldo from '../../assets/photos/waldo.jpg'
 import wenda from '../../assets/photos/wenda.jpg'
 import odlaw from '../../assets/photos/odlaw.jpg'
+import mermaid from '../../assets/photos/mermaid.jpg'
 import { Dropdown } from '../dropdown/dropdown.jsx'
 import { ButtonLoading } from '../loading/load.jsx'
 
@@ -15,7 +16,7 @@ const initialTargets = [
     { name: 'waldo', photo: waldo, isSelected: false, coords: { x: null, y: null } },
     { name: 'wanda', photo: wenda, isSelected: false, coords: { x: null, y: null } },
     { name: 'odlaw', photo: odlaw, isSelected: false, coords: { x: null, y: null } },
-    { name: 'mermaid', photo: null, isSelected: false, coords: { x: null, y: null } }
+    { name: 'mermaid', photo: mermaid, isSelected: false, coords: { x: null, y: null } }
 ];
 
 const initialData = {
