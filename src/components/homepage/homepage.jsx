@@ -9,6 +9,7 @@ import waldo from '../../assets/photos/waldo.jpg'
 import wenda from '../../assets/photos/wenda.jpg'
 import odlaw from '../../assets/photos/odlaw.jpg'
 import { Dropdown } from '../dropdown/dropdown.jsx'
+import { ButtonLoading } from '../loading/load.jsx'
 
 const initialTargets = [
     { name: 'waldo', photo: waldo, isSelected: false, coords: { x: null, y: null } },
@@ -132,32 +133,36 @@ const Home =()=>{
             targets: formattedTargs
         }
         console.log(outbound)
-        //endGame(outbound);
+        endGame(outbound);
         resetGame();
     }
-    const endGame = (payload) =>{
+    const endGame =async (payload) =>{
         try{
-            fetch(`${import.meta.env.VITE_API_URL}`,{
+            const response = await fetch(`${import.meta.env.VITE_API_URL}`,{
                 method: 'PUT',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(payload)
             })
-            .then(response=>{
-                if(response.status >=400) throw new Error('Something whent wrong: ' + response)
-                return response.json();    
-            })
-            .catch(error => {throw new Error(error)})
+            if(!response.ok){
+                const msg = await response.text();
+                throw new Error(`Error ${response.status}: ${msg}`)                    
+            }else{
+                alert('all characters have been found!')
+            }
+            return response.json();    
+            
         }catch(err){
+            alert(err.message)
             console.log(err.message)
         }
     }
     const resetGame =()=>{
-        //setTargets(initialTargets);
-        //setData(initialData);
-        //setTarget(false);
-        //setSession(null);
-        //setScore(null);
-        //pRef.current = { T: { X: null, Y: null }, S: { W: null, H: null } };
+        setTargets(initialTargets);
+        setData(initialData);
+        setTarget(false);
+        setSession(null);
+        setScore(null);
+        pRef.current = { T: { X: null, Y: null }, S: { W: null, H: null } };
     }
     const isGameFinished = targets.every(t=> t.isSelected);
     //manages screen sizing
@@ -235,9 +240,7 @@ const Home =()=>{
                     score={score} 
                     ref={modalRef} 
                     />                
-               )} 
-
-                  
+               )}  
                 <img  
                     ref={imgRef}  
                     src={levelOne}
@@ -273,8 +276,11 @@ const Home =()=>{
                     </div>
                     <button type='button' style={{padding: '10px'}}
                             disabled={!isGameFinished}
-                            onClick={()=>outboundData()}
-                    >{!isGameFinished? ('round in session!'):('end game!')}</button>
+                            onClick={()=>{
+                                setIsEnd(!isEnd);
+                                outboundData();
+                            }}
+                    >{!isGameFinished? ('round in session!'): !isEnd?('end game!'):(<ButtonLoading />)}</button>
                 </section>
             </div>
         </>
