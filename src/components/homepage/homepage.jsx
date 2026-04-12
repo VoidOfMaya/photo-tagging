@@ -42,6 +42,17 @@ const Home =()=>{
     const[isEnd, setIsEnd] = useState(false);
 
     //functions
+    const getScore =()=>{
+        fetch(`${import.meta.env.VITE_API_URL}`)
+        .then(response=>{
+            if(response.status >=400) throw new Error('Something whent wrong: ' + response)
+            return response.json();    
+        })
+        .then(data=>{
+            setScore(data)
+        })
+        .catch(error => {throw new Error(error)})      
+    }
     const setTargetName = (name)=>{
         setData(prev =>({ 
                 ...prev,  
@@ -134,7 +145,7 @@ const Home =()=>{
         }
         console.log(outbound)
         endGame(outbound);
-        resetGame();
+        
     }
     const endGame =async (payload) =>{
         try{
@@ -145,9 +156,12 @@ const Home =()=>{
             })
             if(!response.ok){
                 const msg = await response.text();
-                throw new Error(`Error ${response.status}: ${msg}`)                    
+                setIsEnd(false)   
+                throw new Error(`Error ${response.status}: ${msg}`)  
+                               
             }else{
                 alert('all characters have been found!')
+                resetGame();
             }
             return response.json();    
             
@@ -161,7 +175,9 @@ const Home =()=>{
         setData(initialData);
         setTarget(false);
         setSession(null);
-        setScore(null);
+        setIsEnd(false)
+        setScore(null)
+        getScore()
         pRef.current = { T: { X: null, Y: null }, S: { W: null, H: null } };
     }
     const isGameFinished = targets.every(t=> t.isSelected);
@@ -202,29 +218,16 @@ const Home =()=>{
     useEffect(()=>{
         const dialog = modalRef.current;
         if (!dialog) return;
-
         if(!session&& !dialog.open){
             dialog.showModal() 
-            console.log('modal is open') 
         }else if(session && dialog.open){
-            dialog.close();
-
-            console.log('modal is closed') 
+            dialog.close(); 
         }
     },[session])
-    //manages data fetching
+    //manages score fetching
     useEffect(()=>{
         try{
-            fetch(`${import.meta.env.VITE_API_URL}`)
-            .then(response=>{
-                if(response.status >=400) throw new Error('Something whent wrong: ' + response)
-                return response.json();    
-            })
-            .then(data=>{
-                setScore(data)
-            })
-            .catch(error => {throw new Error(error)})
-            //implement loader visualizer
+            getScore()
         }catch(err){
             console.log(err.message)
         }

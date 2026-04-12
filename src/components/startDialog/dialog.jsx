@@ -8,11 +8,8 @@ const GameStart =({ref,score, start})=>{
     const formData = (e)=>{
         e.preventDefault();
         const playerName = new FormData(e.target);
-        const data = {playername: playerName.get("playername"), mapId: 1}
+        const data = {playername: playerName.get("playername")|| '--Anon--', mapId: 1}
         start(data);
-    }
-    const loader = ()=>{
-        setButton(<ButtonLoading />);
     }
     return(
         <dialog ref={ref} className={style.dlg}>
