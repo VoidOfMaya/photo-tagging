@@ -156,7 +156,9 @@ const Home =()=>{
             })
             if(!response.ok){
                 const msg = await response.text();
-                setIsEnd(false)   
+
+                setIsEnd(false)
+                setTargets(initialTargets);  
                 throw new Error(`Error ${response.status}: ${msg}`)  
                                
             }else{
