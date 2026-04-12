@@ -131,7 +131,8 @@ const Home =()=>{
             screensize: {W: data.currentSX,H:data.currentSY},
             targets: formattedTargs
         }
-        endGame(outbound);
+        console.log(outbound)
+        //endGame(outbound);
         resetGame();
     }
     const endGame = (payload) =>{
@@ -151,12 +152,12 @@ const Home =()=>{
         }
     }
     const resetGame =()=>{
-        setTargets(initialTargets);
-        setData(initialData);
-        setTarget(false);
-        setSession(null);
-        setScore(null);
-        pRef.current = { T: { X: null, Y: null }, S: { W: null, H: null } };
+        //setTargets(initialTargets);
+        //setData(initialData);
+        //setTarget(false);
+        //setSession(null);
+        //setScore(null);
+        //pRef.current = { T: { X: null, Y: null }, S: { W: null, H: null } };
     }
     const isGameFinished = targets.every(t=> t.isSelected);
     //manages screen sizing
@@ -197,7 +198,14 @@ const Home =()=>{
         const dialog = modalRef.current;
         if (!dialog) return;
 
-        !session? dialog.showModal(): dialog.close();
+        if(!session&& !dialog.open){
+            dialog.showModal() 
+            console.log('modal is open') 
+        }else if(session && dialog.open){
+            dialog.close();
+
+            console.log('modal is closed') 
+        }
     },[session])
     //manages data fetching
     useEffect(()=>{
@@ -219,13 +227,17 @@ const Home =()=>{
     return(
         <>
             <div className={style.waldoContainer}> 
-                {/*
+               {session?(
+                ''
+               ):(
                 <GameStart
                     start={startSession} 
                     score={score} 
                     ref={modalRef} 
-                    style={{position: 'absolute'}}/>
-                */}   
+                    />                
+               )} 
+
+                  
                 <img  
                     ref={imgRef}  
                     src={levelOne}
@@ -236,7 +248,7 @@ const Home =()=>{
                     Target:[N: {data.targetName} || X:{data.position.X} || Y:{data.position.Y}] 
                     Screen:[W:{data.currentSX} || H:{data.currentSY}]  
                 </p>
-                {target?(            
+                {session?(            
                     <div style={{width: '50px',
                                 height: '50px',
                                 border: `2px solid red`,

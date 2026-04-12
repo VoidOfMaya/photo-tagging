@@ -4,7 +4,7 @@ import { ScoreBoard } from "../score/score"
 import { ButtonLoading } from "../loading/load"
 
 const GameStart =({ref,score, start})=>{
-    const [button, setButton] = useState('start Game');
+    const [click, setClick] = useState(false);
     const formData = (e)=>{
         e.preventDefault();
         const playerName = new FormData(e.target);
@@ -39,13 +39,16 @@ const GameStart =({ref,score, start})=>{
                 <form onSubmit={formData}>
                     <label htmlFor="playername">player name:</label>
                     <input name="playername" id="playername" placeholder="name goes here!"></input>
-                    <button type="submit" >{button}</button>                
+                    <button type="submit" onClick={()=>setClick(!click)} > Start Game</button>              
                 </form>
                 <h6 style={{textAlign: 'center'}}>field is not required. no name = player is annonymous</h6>                
             </div>
-
-
-            
+            <div style={{gridArea: 'loader',display: 'flex', justifyContent: 'center'}}>
+                {!click?(''):(
+                    <ButtonLoading />
+                )}                 
+            </div>
+  
         </dialog>
     )
 }
