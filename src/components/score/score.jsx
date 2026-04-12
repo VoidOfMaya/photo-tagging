@@ -14,15 +14,12 @@ const formatTime = (ms)=>{
 }
 const populateScore = (data)=>{
     if(!data) return 
-    return data.map(session =>{
-        return<tr><td>{session.name}</td><td>{formatTime(session.time)}</td></tr>
+    const sorted = [...data].sort((a,b)=> a.time - b.time);
+    return sorted.map(session =>{
+        return<tr key={session.name}><td>{session.name}</td><td>{formatTime(session.time)}</td></tr>
     })
-  
-
 }
 const ScoreBoard =({scorsArray})=>{
-    
-
     if(!scorsArray){
         return(
             <div style={{display: 'flex',justifyContent: 'center', marginTop: '5em'}}>
