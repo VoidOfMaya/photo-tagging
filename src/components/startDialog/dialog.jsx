@@ -19,8 +19,8 @@ const GameStart =({ref,score, start})=>{
                 <table style={{position: 'sticky',top: 0}}>
                     <thead style={{height: '10%', textAlign: 'left'}}>
                         <tr>
-                            <th>Player</th>
-                            <th>Time</th>
+                            <th style={{width: "50%"}}>Player</th>
+                            <th style={{width: "50%"}}>Time</th>
                         </tr>
                     </thead>
                 </table>

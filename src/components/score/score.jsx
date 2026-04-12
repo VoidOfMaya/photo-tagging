@@ -16,7 +16,12 @@ const populateScore = (data)=>{
     if(!data) return 
     const sorted = [...data].sort((a,b)=> a.time - b.time);
     return sorted.map(session =>{
-        return<tr key={session.name}><td>{session.name}</td><td>{formatTime(session.time)}</td></tr>
+        return(
+        <tr key={session.name}>
+            <td style={{width: "50%"}}>{session.name}</td>
+            <td style={{width: "50%"}}>{formatTime(session.time)}</td>
+        </tr>
+            )
     })
 }
 const ScoreBoard =({scorsArray})=>{
@@ -30,7 +35,6 @@ const ScoreBoard =({scorsArray})=>{
     return(
         <div className={style.score}>
             <table>
-  
                 <tbody >
                     {populateScore(scorsArray)}
                 </tbody>
